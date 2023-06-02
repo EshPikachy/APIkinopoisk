@@ -1,4 +1,4 @@
-const API_KEY = "048577d2-4f6d-400e-a92b-165cdc8bc6c2";
+const API_KEY = "1a607760-e17f-4290-9b2d-517e8794ce64";
 const BASE_URL = "https://kinopoiskapiunofficial.tech/api";
 const API_URL_POPULAR =
   BASE_URL + "/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=";
@@ -19,7 +19,7 @@ let valuestate = "";
 
 const top100btn = document.querySelector(".top100");
 top100btn.addEventListener("click", () => {
-  getMovies(API_URL_POPULAR );
+  getMovies(API_URL_POPULAR);
   top100btn.classList.add("active");
   input.value = "";
   activeBtn = 1;
@@ -68,27 +68,25 @@ const renderText = (text, image) => {
   const img = document.createElement("img");
   const btn = document.createElement("button");
   const wrap = document.createElement("div");
-  btn.textContent = "click";
+  btn.textContent = "Назад";
   img.className = "iamge";
   btn.className = "btn";
   wrap.className = "wrap";
   img.src = image;
   p.textContent = text;
 
-  wrap.append(img, p, btn);
-  output.append(wrap);
   btn.addEventListener("click", () => {
     if (input.value) {
-      getMovies(API_URL_SEARCH + input.value);
+      getMovies(API_URL_SEARCH + valuestate + pararams + activeBtn);
     } else {
       getMovies(API_URL_POPULAR + activeBtn);
     }
   });
+
+  wrap.append(img, p, btn);
+  output.append(wrap);
 };
 
-// getMovie();
-
-// getMovies(API_URL_SEARCH);
 getMovies(API_URL_POPULAR);
 
 form.addEventListener("submit", (e) => {
@@ -96,7 +94,7 @@ form.addEventListener("submit", (e) => {
   valuestate = input.value;
   getMovies(API_URL_SEARCH + input.value);
   top100btn.classList.remove("active");
-  activeBtn =1
+  activeBtn = 1;
 });
 
 const renderMovies = (data) => {
@@ -104,9 +102,11 @@ const renderMovies = (data) => {
   data.forEach((el) => {
     const filteredNA =
       el.rating === null && "null" ? (el.rating = "N/A") : el.rating;
+
     const result = el.genres.map((el) => {
       return el.genre;
     });
+
     const box = document.createElement("div");
     const img = document.createElement("img");
     const name = document.createElement("p");
@@ -123,14 +123,14 @@ const renderMovies = (data) => {
     name.textContent = el.nameRu;
     rating.textContent = filteredNA;
 
+    box.addEventListener("click", () => {
+      output.innerHTML = "";
+      getText(el.filmId);
+    });
+
     box.append(img, name, genre, circle);
     circle.append(rating);
     output.append(box);
-    box.addEventListener("click", () => {
-      output.innerHTML = "";
-
-      getText(el.filmId);
-    });
   });
 };
 
