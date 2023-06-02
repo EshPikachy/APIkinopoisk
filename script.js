@@ -5,7 +5,6 @@ const API_URL_POPULAR =
 const API_URL_SEARCH = BASE_URL + "/v2.1/films/search-by-keyword?keyword=";
 const API_DETAILS = BASE_URL + "/v2.2/films/";
 const SIMILARS = "/similars";
-
 const pararams = "&page=";
 
 const output = document.querySelector(".output");
@@ -17,6 +16,15 @@ const input = document.querySelector("input");
 let activeBtn = 1;
 let valuestate = "";
 //states
+
+const top100btn = document.querySelector(".top100");
+top100btn.addEventListener("click", () => {
+  getMovies(API_URL_POPULAR );
+  top100btn.classList.add("active");
+  input.value = "";
+  activeBtn = 1;
+  valuestate = "";
+});
 
 const getMovies = async (url) => {
   try {
@@ -86,12 +94,16 @@ getMovies(API_URL_POPULAR);
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   valuestate = input.value;
-  getMovies(`${API_URL_SEARCH}${input.value}`);
+  getMovies(API_URL_SEARCH + input.value);
+  top100btn.classList.remove("active");
+  activeBtn =1
 });
 
 const renderMovies = (data) => {
   output.innerHTML = "";
   data.forEach((el) => {
+    const filteredNA =
+      el.rating === null && "null" ? (el.rating = "N/A") : el.rating;
     const result = el.genres.map((el) => {
       return el.genre;
     });
@@ -109,7 +121,7 @@ const renderMovies = (data) => {
 
     img.src = el.posterUrl;
     name.textContent = el.nameRu;
-    rating.textContent = el.rating;
+    rating.textContent = filteredNA;
 
     box.append(img, name, genre, circle);
     circle.append(rating);
